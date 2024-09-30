@@ -1,0 +1,81 @@
+﻿@model IEnumerable<MvcAdoCrud.Models.Product>
+
+@{
+    ViewBag.Title = "Combined Product Operations";
+}
+
+<h2>Product List and Operations</h2>
+
+<!-- Create New Product Form -->
+<h3>Create New Product</h3>
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="Name" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label>Price</label>
+        <input type="number" name="Price" class="form-control" step="0.01" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+<hr />
+
+<!-- List of Products -->
+<h3>Product List</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>@product.Price</td>
+                <td>
+                    <!-- Edit Product Button -->
+                    <button class="btn btn-warning" data-toggle="collapse" data-target="#editForm-@product.Id">Edit</button>
+
+                    <!-- Delete Product Form -->
+                    <form asp-action="Delete" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@product.Id" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+
+            <!-- Collapsible Edit Form for Each Product -->
+            <tr class="collapse" id="editForm-@product.Id">
+                <td colspan="4">
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" name="Id" value="@product.Id" />
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" name="Name" class="form-control" value="@product.Name" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Price</label>
+                            <input type="number" name="Price" class="form-control" step="0.01" value="@product.Price" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Validation Summary for Model Validation Errors -->
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<!-- Return to List Button -->
+<p>
+    <a asp-action="Index" class="btn btn-secondary">Back to Product List</a>
+</p>
